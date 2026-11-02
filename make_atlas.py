@@ -1,4 +1,4 @@
-"""Render the saved CSV as the paper's A1 atlas, using only the standard library.
+"""Render coordinate diagrams from the CSV, using only the standard library.
 
 The same address pairing, local pairing and scale are used in all panels.
 SVG circles retain their full CSV coordinates in data-point attributes.
@@ -11,6 +11,7 @@ from pathlib import Path
 from verify import ROOT, read_points
 
 COLORS = ('#0072B2', '#D88000', '#00875A', '#C65B91', '#7651A8')
+BLOCK_INSET = 1 / 6  # Fraction of a block between its edge and the outer dot centers.
 
 
 def signed(a):
@@ -33,17 +34,20 @@ def render(points):
         raise ValueError('Unexpected layer counts.')
     svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1920" '
            'viewBox="0 0 800 1920" role="img" aria-labelledby="title desc">',
-           '<title id="title">A 1104-cap in nine dimensions: exact coordinate atlas</title>',
+           '<title id="title">A 1104-cap in nine dimensions: coordinate diagrams</title>',
            '<desc id="desc">Three vertically stacked panels with 512, 80, 512 dots. '
            'Block columns encode z1,z2; block rows encode z3,z4. Within a block, '
            'dot columns encode v1,v2 and dot rows v3,v4. All pairs use lexicographic '
-           'order -1,0,1 increasing rightwards and upwards.</desc>',
+           'order -1,0,1 increasing rightwards and upwards. Dot patterns are '
+           'inset from block borders for readability.</desc>',
            '<rect width="800" height="1920" fill="white"/>',
            '<g font-family="Arial, sans-serif" fill="#222">',
            '<text x="66" y="36" font-size="24">A 1104-cap in F₃⁹</text>',
            '<text x="66" y="60" font-size="14">One dot = one point · common coordinates in every panel</text>']
     left, side = 66, 540
-    cell = side / 81
+    block = side / 9
+    inset = block * BLOCK_INSET
+    step = (block - 2 * inset) / 8
     pair_labels = [(a,b) for a in (-1,0,1) for b in (-1,0,1)]
     for index, (t, name) in enumerate(((1,'+1'),(0,'0'),(2,'−1'))):
         top = 90 + 590 * index
@@ -68,12 +72,15 @@ def render(points):
         for p in layer:
             z = tuple(signed(a) for a in p[1:5])
             v = tuple(signed(a) for a in p[5:])
-            ix = 27*z[0] + 9*z[1] + 3*v[0] + v[1]
-            iy = 27*z[2] + 9*z[3] + 3*v[2] + v[3]
+            # Keep the nine block positions fixed; inset each nine-position local grid.
+            bx, by = 3*z[0]+z[1]+4, 3*z[2]+z[3]+4
+            vx, vy = 3*v[0]+v[1]+4, 3*v[2]+v[3]+4
+            ix, iy = 9*bx+vx, 9*by+vy
             if (ix,iy) in addresses:
-                raise ValueError('Atlas coordinates overlap.')
+                raise ValueError('Diagram coordinates overlap.')
             addresses.add((ix,iy))
-            cx, cy = left+(40.5+ix)*cell, top+(40.5-iy)*cell
+            cx = left + bx*block + inset + vx*step
+            cy = top + (8-by)*block + inset + (8-vy)*step
             color = COLORS[carrier(z)]
             label = ','.join(map(str,p))
             svg.append(f'<circle cx="{cx:.6f}" cy="{cy:.6f}" r="1.85" '
@@ -106,8 +113,8 @@ def main():
         payload = render(read_points(args.csv)).encode('utf-8')
         if args.check:
             if args.output.read_bytes() != payload:
-                raise ValueError('Saved atlas differs from the point list.')
-            print('PASS: saved A1 atlas exactly matches the CSV (512, 80, 512 dots).')
+                raise ValueError('Saved diagrams differ from the point list.')
+            print('PASS: saved coordinate diagrams exactly match the CSV (512, 80, 512 dots).')
         else:
             args.output.parent.mkdir(parents=True, exist_ok=True)
             args.output.write_bytes(payload)

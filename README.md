@@ -1,6 +1,6 @@
 # A 1104-cap in dimension nine
 
-Coordinates, verification code, and coordinate diagrams for **Matt Holden's paper**.
+Coordinates, verification code, and coordinate diagrams accompanying the paper.
 An arXiv link will be added when the preprint is available.
 
 The construction gives 1104 points in $\mathbb F_3^9$ with no three distinct
@@ -84,7 +84,8 @@ Every panel has a 9-by-9 grid of blocks. Block columns encode $(z_1,z_2)$ and
 block rows encode $(z_3,z_4)$. Within each block, 9-by-9 possible dot positions
 encode $(v_1,v_2)$ horizontally and $(v_3,v_4)$ vertically. Pairs are ordered
 lexicographically with $-1<0<1$, increasing rightwards and upwards. The same
-arrangement and scale are used in every panel.
+arrangement and scale are used in every panel. Dots are inset from the block
+edges to make each pattern easier to see.
 
 The blue blocks have addresses in $E=\{\pm e_1,\ldots,\pm e_4\}$; the other
 four colors indicate $F_i$, the addresses whose only zero coordinate is $i$.

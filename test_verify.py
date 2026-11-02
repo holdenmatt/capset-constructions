@@ -53,18 +53,22 @@ class VerificationTests(unittest.TestCase):
             p = tuple(map(int, dot.attrib['data-point'].split(',')))
             t = p[0]
             top = {1:90, 0:680, 2:1270}[t]
-            # Decode plotted coordinates back into four balanced-ternary digits.
-            ix = round((float(dot.attrib['cx'])-66)/(540/81)-40.5)
-            iy = round(40.5-(float(dot.attrib['cy'])-top)/(540/81))
-            def digits(number):
-                result = []
-                for _ in range(4):
-                    digit = (number+1) % 3 - 1
-                    result.append(digit % 3)
-                    number = (number-digit)//3
-                self.assertEqual(number, 0)
-                return result[::-1]
-            x, y = digits(ix), digits(iy)
+            # Decode block position and inset local position separately.
+            # Independent constants describe the intended 60px blocks, 10px inset.
+            def decode_axis(position):
+                block_index = int(position // 60)
+                within = position - 60 * block_index
+                self.assertGreaterEqual(min(within, 60-within)
+                                        - float(dot.attrib['r']), 8)
+                local_index = round((within-10)/5)
+                self.assertAlmostEqual(within, 10+5*local_index, places=5)
+                self.assertIn(block_index, range(9))
+                self.assertIn(local_index, range(9))
+                def pair(index):
+                    return ((index//3-1) % 3, (index%3-1) % 3)
+                return pair(block_index) + pair(local_index)
+            x = decode_axis(float(dot.attrib['cx'])-66)
+            y = decode_axis(540-(float(dot.attrib['cy'])-top))
             reconstructed = (t,x[0],x[1],y[0],y[1],x[2],x[3],y[2],y[3])
             self.assertEqual(reconstructed, p)
             decoded.append(reconstructed)
