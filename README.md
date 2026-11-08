@@ -1,7 +1,7 @@
 # Cap-set constructions
 
 Coordinates and exact verification for **Large caps in F₃⁹ and F₃¹¹**, by Matt Holden.
-An arXiv link will be added when the preprint is available.
+An arXiv link will be added after the paper appears there.
 
 | Cap | Dimension | Construction | Parallel layers |
 | --- | --- | --- | --- |
@@ -12,9 +12,8 @@ Both use the same signed-support model of Hill's cap. Both outer layers of
 1104 are linearly equivalent to the 512-cap discovered using FunSearch.
 The 5744 layer counts do not assert an equivalence between its outer layers.
 
-The sizes exceed the published bounds of 1082 and 5504 in these dimensions.
-To the best of our knowledge, both are new lower bounds; historical priority
-remains under review. No global optimality claim is made.
+To the best of our knowledge, these improve the previously reported lower
+bounds of 1082 and 5504, respectively. No global optimality claim is made.
 
 ## Run all checks
 
@@ -149,10 +148,13 @@ alignments in this encoding need not be lines over F₃.
 - Edel and Bierbrauer, [*Large caps in small spaces*](https://www.yvesedel.de/Papers/smallCaps.pdf),
   **23** (2001), 197–212, Section 2 and Theorem 5/Table 2: Hill coordinates and
   the classical 236-cap model; the linked author version contains corrections.
+- Bierbrauer and Edel, [*Large caps in projective Galois spaces*](https://www.yvesedel.de/Papers/CapSurvey.pdf),
+  in *Current Research Topics in Galois Geometry* (2012), 87–104, Theorem 1
+  and Table 1: doubling the listed 541-cap in PG(8,3) gives the affine
+  dimension-nine bound 1082.
 - Romera-Paredes et al., [*Mathematical discoveries from program search with large language models*](https://doi.org/10.1038/s41586-023-06924-6),
   Nature **625** (2024), 468–475: FunSearch's explicit 512-cap, its discussion
-  of Hill, and the dimension-nine bound 1082. See also
-  [Gijswijt's 2024 survey, Table 1](https://www.nieuwarchief.nl/serie5/pdf/naw5-2024-25-1-045.pdf).
+  of Hill, and a later report of the dimension-nine bound 1082.
 - Karapetyan and Karapetyan, [*Complete Caps in AG(n,3)*](https://doi.org/10.51408/csit2023_30),
   CSIT 2023, 135–136, Corollary 2: the 5504 construction. The ordinary Hill
   slicing 40/36/36 gives 5504 under the substitution; choosing a noncentral
@@ -161,5 +163,7 @@ alignments in this encoding need not be lines over F₃.
   [Edel–Bierbrauer (1999)](https://www.yvesedel.de/Papers/RCap.pdf) and
   [Edel (2004), including Section 3's Hill ingredients](https://www.yvesedel.de/Papers/ExtProd.pdf).
 
-Code, documentation, and generated artifacts are available under the
-[MIT license](LICENSE). Please cite the paper and relevant original sources.
+The paper (including its LaTeX source and PDF), original code, documentation,
+coordinate data, and diagrams are available under the [MIT license](LICENSE).
+This license does not cover the external works cited or linked above.
+Please cite the paper and relevant original sources.
