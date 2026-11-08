@@ -1,140 +1,165 @@
-# A 1104-cap in dimension nine
+# Cap-set constructions
 
-Coordinates, verification code, and coordinate diagrams accompanying the paper.
+Coordinates and exact verification for **Large caps in F₃⁹ and F₃¹¹**, by Matt Holden.
 An arXiv link will be added when the preprint is available.
 
-The construction gives 1104 points in $\mathbb F_3^9$ with no three distinct
-points on a line. Its three parallel layers have sizes **512, 80, 512**.
-Both outer layers are linearly equivalent to the 512-cap discovered using
-FunSearch, a program-search method guided by a large language model.
-The construction is a reflection lift of the classical Calderbank–Fishburn
-236-cap. To the best of our knowledge, 1104 improves the published
-dimension-nine lower bound of 1082; no claim of optimality is made.
+| Cap | Dimension | Construction | Parallel layers |
+| --- | --- | --- | --- |
+| 1104 points | 9 | Reflection lift of the classical Calderbank–Fishburn 236-cap | 512, 80, 512 |
+| 5744 points | 11 | Coordinate substitution in Hill's 112-cap through a noncentral 45-section | 2304, 1136, 2304 |
 
-## Verify it
+Both use the same signed-support model of Hill's cap. Both outer layers of
+1104 are linearly equivalent to the 512-cap discovered using FunSearch.
+The 5744 layer counts do not assert an equivalence between its outer layers.
 
-Use **Python 3.9 or later**. All scripts use only the standard library and run
-offline. From this directory:
+The sizes exceed the published bounds of 1082 and 5504 in these dimensions.
+To the best of our knowledge, both are new lower bounds; historical priority
+remains under review. No global optimality claim is made.
+
+## Run all checks
+
+Use **Python 3.9 or later**. All scripts use only the standard library and run offline:
 
 ```sh
-python3 construction.py --check
-python3 verify.py
+python3 check_all.py
+```
+
+This checks:
+
+- Both saved CSVs exactly match their coordinate recipes.
+- All **608,856 pairs** in the 1104-cap and **16,493,896 pairs** in the 5744-cap:
+  for distinct points `x,y`, the third collinear point `-x-y` is absent.
+- The affine dimensions and the layer counts in the table above.
+- Both invertible maps from the 512-point outer layers to the published FunSearch cap.
+- The saved 1104 diagram, including decoding dot positions back to cap points.
+- The substitution hypotheses, Hill section counts, coordinate recovery, and
+  rejection of lines, duplicates, and malformed data.
+
+`verify.py` reads the point lists without importing either constructor or `hill.py`.
+These finite checks accompany the proofs; they do not certify historical priority.
+The pair check for 5744 is the slowest step.
+
+To run individual checks or regenerate artifacts:
+
+```sh
+python3 verify.py --cap 5744
 python3 verify_funsearch.py
-python3 make_atlas.py --check
-python3 -m unittest -v
+python3 -m unittest discover -s tests -v
+
+python3 construction_1104.py
+python3 construction_5744.py
+python3 make_diagrams.py
 ```
 
-The checks verify:
+Both constructors and `make_diagrams.py` accept `--check` to compare saved
+artifacts without writing. `verify.py` checks both CSVs by default; use
+`python3 verify.py --cap 5744 path/to/points.csv` for a custom point list.
 
-- The saved CSV exactly matches the coordinate recipe.
-- There are 1104 distinct points spanning affine dimension nine, with layer
-  sizes 512, 80, 512 at $t=+1,0,-1$.
-- All **608,856 unordered pairs** are checked: the third point $-x-y$ is absent.
-  This includes pairs whose third point would be in another layer.
-- The invertible linear maps send both outer layers exactly onto the published
-  FunSearch cap. Its four parts each have 128 points, and all **130,816 pairs**
-  are checked as well.
-- The saved coordinate diagrams match the CSV: plotted positions decode back
-  to the original coordinates, with one dot per point.
-- The checker rejects lines, duplicates, and malformed input.
-
-These finite checks accompany the mathematical proofs in the paper. They do
-not certify historical priority or prove the sharp bound for the whole lifting family.
-
-To regenerate the CSV and diagrams:
-
-```sh
-python3 construction.py
-python3 make_atlas.py
-```
-
-## Contents and coordinates
+## Files and coordinates
 
 | File | Purpose |
 | --- | --- |
-| [construction.py](construction.py) | Implements the paper's fiber table and layer recipe. |
-| [data/cap1104.csv](data/cap1104.csv) | All 1104 points, sorted lexicographically, with a header. |
-| [verify.py](verify.py) | Checks the point list without importing the generator. |
-| [verify_funsearch.py](verify_funsearch.py) | Checks the linear maps against the published predicate. |
-| [make_atlas.py](make_atlas.py) | Renders the CSV as a standalone SVG. |
-| [test_verify.py](test_verify.py) | Tests invalid inputs and decodes the coordinate diagrams back into points. |
+| [hill.py](hill.py) | Shared six-coordinate support design and Hill ingredients. |
+| [construction_1104.py](construction_1104.py) | Derives the Hill fibers and assembles the reflection lift. |
+| [construction_5744.py](construction_5744.py) | Implements the affine coordinate substitution. |
+| [data/cap1104.csv](data/cap1104.csv), [data/cap5744.csv](data/cap5744.csv) | Complete point lists, sorted lexicographically, with headers. |
+| [verify.py](verify.py) | Independent pair checks, affine ranks, and layer counts. |
+| [verify_funsearch.py](verify_funsearch.py) | Exact comparison with the published FunSearch membership rule. |
+| [make_diagrams.py](make_diagrams.py) | Renders the 1104 CSV as a standalone SVG. |
+| [tests/](tests/) | Geometry, coordinate conventions, diagram decoding, and negative controls. |
 
-Each CSV row has coordinate order
+Arithmetic is modulo three: **2 represents −1**. Coordinate indices in the
+CSV headers are one-based, matching the paper.
+
+### 1104-cap
 
 ```text
 t,z1,z2,z3,z4,v1,v2,v3,v4
 ```
 
-Arithmetic is modulo three. The CSV uses **0, 1, 2**, where **2 represents −1**
-in the paper. In particular, `t=2` is the minus layer. Numeric CSV sorting puts
-the middle layer first; the coordinate diagrams display +1, 0, −1.
+`t` selects the layer; `z` specifies a block and `v` a point in its fiber.
+The diagram displays layers `t=1,0,2` (that is, +1,0,−1).
 
-The SHA-256 of the saved CSV, including its header and LF line endings, is:
+### 5744-cap
 
 ```text
-5a5077411a9123d4e013c3f808bc159649e2acaeac153d271eba54c7617bd791
+x1,x2,x4,x5,x6,a1,a2,a3,a4,a5,a6
 ```
 
-## Reading the coordinate diagrams
+The source is `H = P ∪ Q+` in six coordinates. `P` contains all signings on
+these ten supports:
 
-Each dot is one cap point. The three panels select the ninth coordinate $t$;
-block and dot positions encode the other eight coordinates.
+```text
+123, 124, 135, 146, 156, 236, 245, 256, 345, 346
+```
 
-Every panel has a 9-by-9 grid of blocks. Block columns encode $(z_1,z_2)$ and
-block rows encode $(z_3,z_4)$. Within each block, 9-by-9 possible dot positions
-encode $(v_1,v_2)$ horizontally and $(v_3,v_4)$ vertically. Pairs are ordered
-lexicographically with $-1<0<1$, increasing rightwards and upwards. The same
-arrangement and scale are used in every panel. Dots are inset from the block
-edges to make each pattern easier to see.
+`Q+` and `Q−` are the full-support vectors of coordinate product +1 and −1.
+The substituted scalar is `alpha = x3+x4+x5−1`. Retain `x1,x2,x4,x5,x6` and
+append every vector `a` in `P`, `Q+`, or `Q−` according as `alpha` is 0,1,2.
+These replacement sets have sizes 80,32,32; the source sections have sizes
+45,45,22. Thus the output has `80·45 + 32·45 + 32·22 = 5744` points.
 
-The blue blocks have addresses in $E=\{\pm e_1,\ldots,\pm e_4\}$; the other
-four colors indicate $F_i$, the addresses whose only zero coordinate is $i$.
-An occupied block contains a copy of a four-coordinate fiber. Straight
-alignments on the page need not be lines over $\mathbb F_3$.
-
-![Coordinate diagrams of the three layers](figures/atlas1104.svg)
+The source coordinate can be recovered as `x3 = alpha+1−x4−x5` modulo 3.
+The output's layers use `beta = x2+x4+x5`, with sizes 2304,1136,2304 at
+`beta=1,0,2`. The six-dimensional set `P` is distinct from the 1104-cap's
+80-point middle layer in eight dimensions.
 
 ## The FunSearch comparison
 
-The membership rule is specified by Romera-Paredes et al., **Figure 4c and
-Supplement Figure E.23**. `verify_funsearch.py` evaluates those mathematical
-conditions on all $3^8$ vectors. It uses zero-based indices $x_0,\ldots,x_7$.
-The map from the plus layer is:
+FunSearch is a program-search method guided by a large language model.
+The 512-cap's membership rule is specified by Romera-Paredes et al.,
+**Figure 4c and Supplement Figure E.23**. `verify_funsearch.py` evaluates it
+on all `3^8` vectors, using zero-based indices `x0,…,x7`.
+The map from the 1104-cap's plus layer is:
 
 ```text
 x = (z3, -v2+v4, -v1-v3, z1-z2, z4, z1+z2, v1-v3, v2+v4) mod 3.
 ```
 
-For the minus layer, first apply the coordinate permutation
-`(z2,z1,z3,z4,v3,v4,v1,v2)`, which exchanges the outer layers.
-The checks compare the complete point sets.
+For the minus layer, first apply `(z2,z1,z3,z4,v3,v4,v1,v2)`, which exchanges
+the two outer layers. The checker verifies invertibility and equality of
+the complete point sets, then checks all 130,816 FunSearch pairs for lines.
 
-The generated FunSearch cap was also checked against the authors'
+The predicate was also checked against the authors'
 [official point list at a fixed revision](https://github.com/google-deepmind/funsearch/blob/cc53f274237d7ab05c19df939edbc1f9616a7c19/cap_set/n8_size512.txt).
-To repeat that additional check, download that file and run:
+To repeat that optional check, download the file and run:
 
 ```sh
 python3 verify_funsearch.py --official-points /path/to/n8_size512.txt
 ```
 
+## Reading the 1104 diagram
+
+Each dot is one point. In every panel, the 9-by-9 block grid encodes
+`(z1,z2)` horizontally and `(z3,z4)` vertically. Within each block, the
+9-by-9 possible dot positions encode `(v1,v2)` and `(v3,v4)`. Pairs are
+ordered lexicographically, −1 < 0 < 1, increasing rightwards and upwards.
+All panels share the same arrangement and scale, with dots inset from block edges.
+
+Blue blocks have addresses on the signed axes `E`; the other four colors
+label `Fi`, the addresses whose only zero coordinate is `i`. Straight
+alignments in this encoding need not be lines over F₃.
+
+![Coordinate diagrams of the 1104-cap](figures/cap1104.svg)
+
 ## Attribution
 
-- Calderbank and Fishburn, _Maximal three-independent subsets of {0,1,2}^n_,
+- Calderbank and Fishburn, *Maximal three-independent subsets of {0,1,2}ⁿ*,
   Designs, Codes and Cryptography **4** (1994), 203–211: the classical 236-cap.
-- Edel and Bierbrauer, _Large caps in small spaces_, Designs, Codes and
-  Cryptography **23** (2001), 197–212, Theorem 5 and Table 2:
-  [the explicit classical model, corrected author version](https://www.yvesedel.de/Papers/smallCaps.pdf).
-- Romera-Paredes et al., _Mathematical discoveries from program search with
-  large language models_, Nature **625** (2024), 468–475:
-  [FunSearch and its explicit 512-cap](https://doi.org/10.1038/s41586-023-06924-6).
-  That paper already gives an explicit support/reflection recipe and discusses
-  its resemblance to Hill's cap.
-- [Gijswijt's 2024 survey, Table 1](https://www.nieuwarchief.nl/serie5/pdf/naw5-2024-25-1-045.pdf)
-  records the prior dimension-nine lower bound of 1082.
-- Recursive and fiber constructions are classical; see
+- Edel and Bierbrauer, [*Large caps in small spaces*](https://www.yvesedel.de/Papers/smallCaps.pdf),
+  **23** (2001), 197–212, Section 2 and Theorem 5/Table 2: Hill coordinates and
+  the classical 236-cap model; the linked author version contains corrections.
+- Romera-Paredes et al., [*Mathematical discoveries from program search with large language models*](https://doi.org/10.1038/s41586-023-06924-6),
+  Nature **625** (2024), 468–475: FunSearch's explicit 512-cap, its discussion
+  of Hill, and the dimension-nine bound 1082. See also
+  [Gijswijt's 2024 survey, Table 1](https://www.nieuwarchief.nl/serie5/pdf/naw5-2024-25-1-045.pdf).
+- Karapetyan and Karapetyan, [*Complete Caps in AG(n,3)*](https://doi.org/10.51408/csit2023_30),
+  CSIT 2023, 135–136, Corollary 2: the 5504 construction. The ordinary Hill
+  slicing 40/36/36 gives 5504 under the substitution; choosing a noncentral
+  45-section gains `(80−32)(45−40) = 240` points.
+- Fiber and generalized-product constructions are classical; see
   [Edel–Bierbrauer (1999)](https://www.yvesedel.de/Papers/RCap.pdf) and
-  [Edel (2004)](https://www.yvesedel.de/Papers/ExtProd.pdf).
+  [Edel (2004), including Section 3's Hill ingredients](https://www.yvesedel.de/Papers/ExtProd.pdf).
 
 Code, documentation, and generated artifacts are available under the
-[MIT license](LICENSE). Please cite the paper and the relevant original sources
-when using the construction.
+[MIT license](LICENSE). Please cite the paper and relevant original sources.

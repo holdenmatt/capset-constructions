@@ -13,18 +13,23 @@ from itertools import combinations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-HEADER = ['t', 'z1', 'z2', 'z3', 'z4', 'v1', 'v2', 'v3', 'v4']
+HEADERS = {
+    9: ['t', 'z1', 'z2', 'z3', 'z4', 'v1', 'v2', 'v3', 'v4'],
+    11: ['x1', 'x2', 'x4', 'x5', 'x6', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6'],
+}
+SIZES = {1104: 9, 5744: 11}
 
 
-def read_points(path):
+def read_points(path, dimension=9):
+    header = HEADERS[dimension]
     with Path(path).open(encoding='ascii', newline='') as handle:
         reader = csv.reader(handle)
-        if next(reader, None) != HEADER:
-            raise ValueError('CSV header must be ' + ','.join(HEADER))
+        if next(reader, None) != header:
+            raise ValueError('CSV header must be ' + ','.join(header))
         points = []
         for line, row in enumerate(reader, 2):
-            if len(row) != 9 or any(x not in ('0', '1', '2') for x in row):
-                raise ValueError(f'Invalid ternary nine-coordinate row at line {line}.')
+            if len(row) != dimension or any(x not in ('0', '1', '2') for x in row):
+                raise ValueError(f'Invalid ternary {dimension}-coordinate row at line {line}.')
             points.append(tuple(map(int, row)))
     return points
 
@@ -70,29 +75,49 @@ def matrix_rank(rows):
     return rank
 
 
+def verify_file(path, size):
+    dimension = SIZES[size]
+    points = read_points(path, dimension)
+    if len(points) != size:
+        raise ValueError(f'Expected {size} points, found {len(points)}.')
+    if size == 1104:
+        layers = Counter(p[0] for p in points)
+        expected = {1: 512, 0: 80, 2: 512}
+        label = 't'
+    else:
+        # CSV indices 1,2,3 are the retained source coordinates x2,x4,x5.
+        layers = Counter((p[1] + p[2] + p[3]) % 3 for p in points)
+        expected = {1: 2304, 0: 1136, 2: 2304}
+        label = 'beta=x2+x4+x5'
+    if layers != expected:
+        raise ValueError(f'Unexpected layer sizes: {dict(layers)}')
+    differences = [tuple((x-y) % 3 for x, y in zip(p, points[0]))
+                   for p in points[1:]]
+    rank = matrix_rank(differences)
+    if rank != dimension:
+        raise ValueError(f'Expected affine dimension {dimension}, found {rank}.')
+    checked = check_cap(points, dimension)
+    print(f'PASS: {size} distinct points in F_3^{dimension}; affine dimension {rank}.')
+    print(f'PASS: {label} layers (+1,0,-1) = '
+          f'({layers[1]},{layers[0]},{layers[2]}).')
+    print(f'PASS: all {checked:,} unordered pairs checked; no forbidden line.')
+    print(f'{path.name} SHA256:', hashlib.sha256(path.read_bytes()).hexdigest())
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('csv', nargs='?', type=Path, default=ROOT / 'data/cap1104.csv')
+    parser.add_argument('csv', nargs='?', type=Path, help='Custom CSV; requires --cap.')
+    parser.add_argument('--cap', type=int, choices=tuple(SIZES),
+                        help='Check one cap; by default check both saved point lists.')
     args = parser.parse_args()
+    if args.csv is not None and args.cap is None:
+        parser.error('A custom CSV requires --cap 1104 or --cap 5744.')
     try:
-        points = read_points(args.csv)
-        checked = check_cap(points, 9)
-        if len(points) != 1104:
-            raise ValueError(f'Expected 1104 points, found {len(points)}.')
-        layers = Counter(p[0] for p in points)
-        if layers != {1: 512, 0: 80, 2: 512}:
-            raise ValueError(f'Unexpected layer sizes: {dict(layers)}')
-        differences = [tuple((x-y) % 3 for x, y in zip(p, points[0]))
-                       for p in points[1:]]
-        rank = matrix_rank(differences)
-        if rank != 9:
-            raise ValueError(f'Expected affine dimension 9, found {rank}.')
+        for size in ([args.cap] if args.cap else SIZES):
+            path = args.csv if args.csv is not None else ROOT / f'data/cap{size}.csv'
+            verify_file(path, size)
     except (OSError, ValueError, UnicodeError) as error:
         parser.exit(1, f'FAIL: {error}\n')
-    print('PASS: 1104 distinct points in F_3^9; affine dimension 9.')
-    print('PASS: layer sizes (t=+1, 0, -1) = (512, 80, 512).')
-    print(f'PASS: all {checked:,} unordered pairs checked; no forbidden line.')
-    print('CSV SHA256:', hashlib.sha256(args.csv.read_bytes()).hexdigest())
 
 
 if __name__ == '__main__':

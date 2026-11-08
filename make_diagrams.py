@@ -106,7 +106,7 @@ def render(points):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--csv', type=Path, default=ROOT / 'data/cap1104.csv')
-    parser.add_argument('--output', type=Path, default=ROOT / 'figures/atlas1104.svg')
+    parser.add_argument('--output', type=Path, default=ROOT / 'figures/cap1104.svg')
     parser.add_argument('--check', action='store_true', help='Check saved SVG without writing.')
     args = parser.parse_args()
     try:

@@ -5,7 +5,7 @@ import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 
-from make_atlas import render
+from make_diagrams import render
 from verify import ROOT, check_cap, matrix_rank, read_points
 
 
