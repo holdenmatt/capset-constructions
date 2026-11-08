@@ -2,3 +2,11 @@ __pycache__/
 *.py[cod]
 .DS_Store
 .venv/
+
+# LaTeX build intermediates
+tex/*.aux
+tex/*.log
+tex/*.out
+tex/*.synctex.gz
+tex/*.fls
+tex/*.fdb_latexmk

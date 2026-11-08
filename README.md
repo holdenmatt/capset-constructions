@@ -1,7 +1,8 @@
 # Cap-set constructions
 
 Coordinates and exact verification for **Large caps in F₃⁹ and F₃¹¹**, by Matt Holden.
-An arXiv link will be added after the paper appears there.
+[LaTeX source](tex/main.tex). The reviewed PDF will be added as
+`holden-large-caps.pdf` before publication. An arXiv link will follow when available.
 
 | Cap | Dimension | Construction | Parallel layers |
 | --- | --- | --- | --- |
@@ -17,10 +18,11 @@ bounds of 1082 and 5504, respectively. No global optimality claim is made.
 
 ## Run all checks
 
-Use **Python 3.9 or later**. All scripts use only the standard library and run offline:
+Use **Python 3.9 or later**. All scripts use only the standard library and run offline.
+From the repository root:
 
 ```sh
-python3 check_all.py
+python3 code/check_all.py
 ```
 
 This checks:
@@ -41,31 +43,33 @@ The pair check for 5744 is the slowest step.
 To run individual checks or regenerate artifacts:
 
 ```sh
-python3 verify.py --cap 5744
-python3 verify_funsearch.py
-python3 -m unittest discover -s tests -v
+python3 code/verify.py --cap 5744
+python3 code/verify_funsearch.py
+python3 -m unittest discover -s code -p 'test_*.py' -v
 
-python3 construction_1104.py
-python3 construction_5744.py
-python3 make_diagrams.py
+python3 code/construction_1104.py
+python3 code/construction_5744.py
+python3 code/make_diagrams.py
 ```
 
 Both constructors and `make_diagrams.py` accept `--check` to compare saved
 artifacts without writing. `verify.py` checks both CSVs by default; use
-`python3 verify.py --cap 5744 path/to/points.csv` for a custom point list.
+`python3 code/verify.py --cap 5744 path/to/points.csv` for a custom point list.
 
 ## Files and coordinates
 
 | File | Purpose |
 | --- | --- |
-| [hill.py](hill.py) | Shared six-coordinate support design and Hill ingredients. |
-| [construction_1104.py](construction_1104.py) | Derives the Hill fibers and assembles the reflection lift. |
-| [construction_5744.py](construction_5744.py) | Implements the affine coordinate substitution. |
+| [tex/](tex/) | Manuscript source and its included figure; compile `main.tex` from this directory. |
+| [code/check_all.py](code/check_all.py) | Runs the complete offline verification suite. |
+| [hill.py](code/hill.py) | Shared six-coordinate support design and Hill ingredients. |
+| [construction_1104.py](code/construction_1104.py) | Derives the Hill fibers and assembles the reflection lift. |
+| [construction_5744.py](code/construction_5744.py) | Implements the affine coordinate substitution. |
 | [data/cap1104.csv](data/cap1104.csv), [data/cap5744.csv](data/cap5744.csv) | Complete point lists, sorted lexicographically, with headers. |
-| [verify.py](verify.py) | Independent pair checks, affine ranks, and layer counts. |
-| [verify_funsearch.py](verify_funsearch.py) | Exact comparison with the published FunSearch membership rule. |
-| [make_diagrams.py](make_diagrams.py) | Renders the 1104 CSV as a standalone SVG. |
-| [tests/](tests/) | Geometry, coordinate conventions, diagram decoding, and negative controls. |
+| [verify.py](code/verify.py) | Independent pair checks, affine ranks, and layer counts. |
+| [verify_funsearch.py](code/verify_funsearch.py) | Exact comparison with the published FunSearch membership rule. |
+| [make_diagrams.py](code/make_diagrams.py) | Renders the 1104 CSV as a standalone SVG. |
+| [code/tests/](code/tests/) | Geometry, coordinate conventions, diagram decoding, and negative controls. |
 
 Arithmetic is modulo three: **2 represents −1**. Coordinate indices in the
 CSV headers are one-based, matching the paper.
@@ -124,7 +128,7 @@ The predicate was also checked against the authors'
 To repeat that optional check, download the file and run:
 
 ```sh
-python3 verify_funsearch.py --official-points /path/to/n8_size512.txt
+python3 code/verify_funsearch.py --official-points /path/to/n8_size512.txt
 ```
 
 ## Reading the 1104 diagram

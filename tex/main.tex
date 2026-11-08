@@ -1,0 +1,526 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=28mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage{tikz}
+\usepackage[hidelinks]{hyperref}
+\newcommand{\F}{\mathbb F_3}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newsavebox{\atlasbox}
+\title{Large caps in $\F^9$ and $\F^{11}$}
+\author{Matt Holden\thanks{\copyright\ 2026 Matt Holden. This paper is licensed under the
+\href{https://github.com/holdenmatt/capset-constructions/blob/main/LICENSE}{MIT License}.}\\[2pt]
+\small\href{mailto:holden.matt.math@gmail.com}{\texttt{holden.matt.math@gmail.com}}}
+\date{8 November 2026}
+\hypersetup{pdftitle={Large caps in F3^9 and F3^11},pdfauthor={Matt Holden}}
+\begin{document}
+\maketitle
+\begin{abstract}
+We construct caps of sizes $1104$ in $\F^9$ and $5744$ in $\F^{11}$
+from a common signed-support model of Hill's $112$-cap. A reflection lift
+sends the Calderbank--Fishburn $236$-cap to three compatible layers of
+sizes $512,80,512$; both outer layers are linearly equivalent to the
+FunSearch $512$-cap. A coordinate substitution replaces one scalar
+coordinate of Hill's $112$-cap by sets of sizes $80,32,32$. Assigning the
+$80$-point set to a noncentral $45$-point section gives $5744$, gaining
+$240$ points over the $5504$ construction obtained from a central
+$40$-point section.
+\end{abstract}
+
+\section{Two constructions from Hill caps}\label{sec:cap}
+
+A \emph{cap} in $\F^d$ is a set whose solutions of $x+y+z=0$ have
+$x=y=z$; equivalently, it contains no three distinct collinear points.
+Write $r_3(\F^d)$ for the largest size of such a set.
+We call the $512$-cap discovered by Romera-Paredes et al.\ \cite{funsearch}
+the \emph{FunSearch cap}, after their program-search method guided by a
+large language model.
+
+\begin{theorem}\label{thm:main}
+The sets $K\subseteq\F^9$ and $L\subseteq\F^{11}$ defined below are caps
+of sizes $1104$ and $5744$, respectively. The three parallel layers of
+$K$ have sizes $512,80,512$, and both outer layers are linearly equivalent
+to the FunSearch cap. In particular,
+\[
+ r_3(\F^9)\ge1104,\qquad r_3(\F^{11})\ge5744.
+\]
+\end{theorem}
+
+To the best of our knowledge, these improve the previously reported
+lower bounds of $1082$ and $5504$, respectively. The former follows by
+doubling the $541$-cap in $\mathrm{PG}(8,3)$ recorded by Bierbrauer--Edel
+\cite[Theorem 1 and Table 1]{capsurvey}; the latter is stated explicitly
+in \cite[Corollary 2]{karapetyan}.
+
+Both constructions copy sections of classical caps
+into larger spaces. For $K$, reflection pairs the fibers of two Hill
+caps and preserves their assembly into the $236$-cap. For $L$, the same
+Hill model supplies both the source and three replacement sets; the
+size is governed by a single affine section.
+
+The companion repository,
+\href{https://github.com/holdenmatt/capset-constructions}{\nolinkurl{github.com/holdenmatt/capset-constructions}},
+contains both point lists, their constructors, exact checks of the cap
+property and the FunSearch equivalences, and the $1104$ coordinate diagrams.
+
+Figure~\ref{fig:construction} displays the three layers of $K$.
+Within each layer, each small square represents a
+four-dimensional affine flat: its position fixes four coordinates, while
+the $81$ possible dot positions encode the remaining four. The displayed
+dots form the cap's intersection with that flat, which we call a
+\emph{fiber}. The repeated patterns arise by copying fibers of two
+classical Hill caps to these block positions.
+
+% Use more of the dedicated figure page; restore the prose margins afterwards.
+\newgeometry{left=28mm,right=28mm,top=16mm,bottom=18mm}
+\begin{figure}[p]
+\begin{lrbox}{\atlasbox}
+\begin{minipage}{\textwidth}
+\centering
+\input{atlas_1104.tex}
+\caption{The three layers at a common scale; each dot is one point.
+Block columns and rows encode $(z_1,z_2)$ and $(z_3,z_4)$;
+dot columns and rows within each block encode $(v_1,v_2)$ and $(v_3,v_4)$.
+Both grids are $9\times9$, with pairs ordered lexicographically,
+$-1<0<1$, rightwards and upwards. Colors label $E,F_1,\ldots,F_4$.
+Visual alignments need not be lines over $\F$.}
+\label{fig:construction}
+\end{minipage}
+\end{lrbox}
+% Check the complete stack, including its caption, against the page height.
+\ifdim\dimexpr\ht\atlasbox+\dp\atlasbox\relax>\textheight
+  \PackageError{cap-atlas}{The atlas and caption exceed one page:
+    \the\dimexpr\ht\atlasbox+\dp\atlasbox\relax\space versus \the\textheight}
+    {Reduce the panel size or shorten the caption.}
+\fi
+\usebox{\atlasbox}
+\end{figure}
+% Finish the atlas page before beginning the coordinate recipe.
+\restoregeometry
+
+\paragraph{The Hill ingredients.}
+The \emph{support} of a vector is the set of its nonzero coordinate positions;
+write $123$ for $\{1,2,3\}$, and similarly for other supports.
+On six coordinates take the classical design
+\[
+\mathcal D=\{123,124,135,146,156,236,245,256,345,346\}.
+\]
+Let $P\subseteq\F^6$ consist of all vectors obtained by assigning $1$ or
+$-1$ independently on these supports, with zeros elsewhere, and put
+\[
+ Q_\epsilon=\{x\in\{\pm1\}^6:\textstyle\prod_{j=1}^6x_j=\epsilon\},
+ \qquad \epsilon\in\{1,-1\}.
+\]
+Then $|P|=80$, $|Q_\epsilon|=32$, and $H=P\cup Q_1$ is the standard Hill
+$112$-cap \cite[Section 2]{smallcaps}. Let $H'$ use the complements of
+the ten supports in $\mathcal D$, with the same full-support set $Q_1$.
+These sets serve both constructions: $H,H'$ supply the fibers of $K$,
+while $P,Q_1,Q_{-1}$ are the replacement sets for $L$.
+
+\paragraph{The $1104$-point recipe.}
+In $H$ and $H'$, fix the last two coordinates, denoted by $q$, and collect
+the remaining four-coordinate vectors $v$ into a fiber.
+Simultaneously negating the last two coordinates preserves both caps,
+so the fibers at $q$ and $-q$ agree. This leaves five types:
+one at the center and four at opposite pairs. Table~\ref{tab:fibers}
+lists the fibers of $H$ in the $+$ column and those of $H'$ in the $-$ column.
+Their size profile $(16,12,12,12,12)$ is recorded in
+\cite[Lemma 3.1(c)]{thackeray}.
+
+In $K$, use coordinates $(t,z,v)\in\F\times\F^4\times\F^4$.
+Here $t$ selects the layer, $z$ the block, and $v$ a vector in its fiber.
+Copy the center fiber to the eight signed axes, and the $i$th paired
+fiber to the eight positions whose only zero coordinate is $i$:
+\[
+ E=\{\pm e_1,\ldots,\pm e_4\},\qquad
+ F_i=\{z\in\F^4:z_i=0,\ z_j\ne0\text{ for }j\ne i\},\qquad 1\le i\le4.
+\]
+These five sets are disjoint. Their line patterns make the lift preserve
+the cap property, as shown in Section~\ref{sec:lifts}.
+
+Write $\Sigma(\mathcal S)$ for all vectors with a support in the list
+$\mathcal S$, assigning $1$ or $-1$ independently at each listed position
+and zero elsewhere. For example, in the four-coordinate fibers,
+\[
+ \Sigma(\{123,124\})
+ =\{(a,b,c,0):a,b,c\in\{\pm1\}\}
+ \cup\{(a,b,0,c):a,b,c\in\{\pm1\}\}.
+\]
+Also write
+\[
+ E_I=\{\pm e_i:i\in I\},\qquad
+ P_\epsilon=\{v\in\{\pm1\}^4:\textstyle\prod_jv_j=\epsilon\}.
+\]
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{ccccr}
+\toprule
+Source position $q$ & Fiber & $+$ layer & $-$ layer & Size\\
+\midrule
+$(0,0)$ & $C$ & $\Sigma(\{123,124\})$ & $\Sigma(\{134,234\})$ & $16$\\
+$\pm(1,0)$ & $A_1$ & $\Sigma(\{13,24,34\})$ & $\Sigma(\{12,14,23\})$ & $12$\\
+$\pm(0,1)$ & $A_2$ & $\Sigma(\{14,23,34\})$ & $\Sigma(\{12,13,24\})$ & $12$\\
+$\pm(1,1)$ & $A_3$ & $E_{\{1,2\}}\cup P_1$ & $E_{\{3,4\}}\cup P_1$ & $12$\\
+$\pm(1,-1)$ & $A_4$ & $E_{\{1,2\}}\cup P_{-1}$ & $E_{\{3,4\}}\cup P_{-1}$ & $12$\\
+\bottomrule
+\end{tabular}
+\caption{Fibers $C_\pm,A_{i,\pm}$ obtained by fixing coordinates $5,6$
+of the two Hill caps. Each nonzero row gives the same fiber at both
+opposite source positions; the size is for one fiber.}
+\label{tab:fibers}
+\end{table}
+
+The three layers and the cap are
+\begin{align}
+ B_\pm&=(E\times C_\pm)\ \cup\ \bigcup_{i=1}^4(F_i\times A_{i,\pm}),\label{eq:outer}\\
+ M&=(E\times E)\ \cup\ ((F_1\cup F_2)\times\{0\}),\label{eq:middle}\\
+ K&=(\{1\}\times B_+)\ \cup\ (\{0\}\times M)
+                 \ \cup\ (\{-1\}\times B_-).\label{eq:cap}
+\end{align}
+FunSearch already gives an explicit recipe for its $512$-cap and compares
+it with Hill's cap \cite[Figure 4 and Supplement E.2]{funsearch}.
+Both operations below use classical fiber and generalized-product ideas
+\cite{recursive,extended}. Our focus is their application to the
+$236\to1104$ construction and to a noncentral Hill section giving $5744$.
+We prove the reflection rule first, apply it to the three-layer source,
+and then return to $H$ for the coordinate substitution.
+
+\section{The reflection lift}\label{sec:lifts}
+
+We now justify the atlas's repeated patterns by a general lifting rule.
+Let $V$ have dimension $m$, and let $S\subseteq\F^2\times V$ be a cap
+unchanged by the simultaneous sign flip
+\[
+ g(q_1,q_2,v)=(-q_1,-q_2,v).
+\]
+The fibers $S_q=\{v\in V:(q,v)\in S\}$ satisfy $S_q=S_{-q}$.
+Choose representatives $d_1,\ldots,d_4$ for the four nonzero pairs
+$\{q,-q\}$, and write $C=S_0$ and $A_i=S_{d_i}=S_{-d_i}$.
+Thus
+\begin{equation}\label{source}
+ S=(\{0\}\times C)\ \cup\ \bigcup_{i=1}^4
+       (\{d_i,-d_i\}\times A_i).
+\end{equation}
+The fixed cap points are exactly those above $q=0$. Put $c=|C|$,
+$a_i=|A_i|$ and $s=|S|=c+2\sum_i a_i$.
+Empty or repeated fibers are allowed; the fibers themselves need not be
+centrally symmetric.
+
+Using the atlas's block positions $E,F_i\subseteq\F^4$, copy $C$ to $E$
+and each $A_i$ to $F_i$. This defines the two-coordinate lift
+\begin{equation}\label{lift}
+ R_2(S,g)=(E\times C)\ \cup\ \bigcup_{i=1}^4(F_i\times A_i).
+\end{equation}
+\begin{theorem}[Cap-preserving lift]\label{thm:lift}
+The set $R_2(S,g)\subseteq\F^{m+4}$ is a cap of size
+\[
+ |R_2(S,g)|=8\left(c+\sum_i a_i\right)=4(s+c).
+\]
+An affine equivalence of source caps intertwining their chosen sign flips
+induces an affine equivalence of their lifts.
+\end{theorem}
+
+\begin{proof}
+Every fiber is a cap. The source also restricts how three local vectors
+can interact:
+\begin{equation}\label{compatibility}
+ 0\notin C+A_i+A_i,\qquad
+ 0\notin A_i+A_j+A_k\quad(i,j,k\text{ distinct}).
+\end{equation}
+The first restriction comes from the three source addresses
+$0,d_i,-d_i$. For the second, write $d_k=a d_i+b d_j$ with
+$a,b\in\{\pm1\}$, possible because the three direction pairs are distinct.
+The addresses $a d_i,b d_j,-d_k$ sum to zero, and changing a representative's
+sign leaves its fiber unchanged. In both cases the source addresses are
+distinct, even if some local vectors coincide.
+
+Now suppose three lifted points $(z_r,v_r)$, $r=1,2,3$, sum to zero.
+The block addresses $z_r$ and local vectors $v_r$ must separately sum to zero.
+If two block addresses agree, then $z_1+z_2+z_3=0$ forces all three
+to agree. All points lie in one copied fiber, whose cap property forces
+the three points to coincide.
+
+It remains to consider three distinct blocks. An address in $E$ has
+one nonzero coordinate; an address in $F_i$ has exactly one zero
+coordinate, at position $i$. These support patterns leave only two
+possible types of zero-sum address triple:
+\[
+ E,F_i,F_i
+ \qquad\text{or}\qquad
+ F_i,F_j,F_k\quad(i,j,k\text{ distinct}).
+\]
+Indeed, two distinct $E$ addresses have a sum with zero or two nonzero
+coordinates, whose negative is unoccupied. With exactly one $E$ address,
+the other two must have the same missing coordinate: otherwise the $E$
+address would need two nonzero coordinates to cancel their sum.
+For three addresses in the $F_i$, exactly two equal missing coordinates leave a
+coordinate with a single nonzero entry. If all three missing coordinates
+agree, the other entries can sum to zero only by agreeing coordinatewise,
+which would make the addresses identical. Hence their missing coordinates
+must all differ.
+
+In the atlas, these two types mean one blue block and two blocks of one
+other color, or three nonblue blocks of different colors. Their local
+vectors would violate the respective restrictions in \eqref{compatibility}.
+The five sets of block addresses are disjoint and each has size eight,
+giving the stated count.
+
+Finally, an affine map intertwining two such source symmetries has, in these
+coordinates, the form $(q,v)\mapsto(Bq,Av+b)$. The map $B$ permutes
+the four source direction pairs, say by $\sigma$. The lifted map
+$(z,v)\mapsto(P_\sigma z,Av+b)$ carries one lift to the other, where
+$P_\sigma e_i=e_{\sigma(i)}$.
+\end{proof}
+
+The sign flip $g$ is an \emph{involution}: $g^2=\mathrm{id}$.
+Its \emph{negative eigenspace} is the two-space $\{(q,0):q\in\F^2\}$,
+on which it acts by $-1$; it fixes the complementary space
+$\{(0,v):v\in V\}$ pointwise. Conversely, any affine involution whose
+linear part has a two-dimensional negative eigenspace takes this form
+in suitable affine coordinates. Indeed, it has a fixed point (the midpoint
+of any point and its image); after translating that point to the origin,
+its $+1$ and $-1$ eigenspaces give the required coordinate split.
+The subscript in $R_2$ records the two reversed directions; replacing two
+coordinates by four adds two ambient dimensions.
+
+\section{Lifting the classical $236$-cap}\label{sec:source}
+
+Use the Hill caps $H,H'$ defined in Section~\ref{sec:cap}, and let
+$E_6=\{\pm e_i:1\le i\le6\}$.
+The following construction is due to Calderbank--Fishburn \cite{calderbank};
+we use the model in \cite[Theorem 5 and Table 2]{smallcaps}.
+
+\begin{lemma}\label{lem:classical}
+The set
+\[
+ K_{236}=(\{1\}\times H)\cup(\{0\}\times E_6)
+                      \cup(\{-1\}\times H')
+\]
+is a cap.
+\end{lemma}
+\begin{proof}
+Each layer is a cap. A triple meeting all three layers would require
+a point of $H$ and a point of $H'$ to sum to an axis vector.
+Two sparse points cannot do so: their support symmetric difference
+would have size at most one, forcing their three-element supports to
+agree, whereas the two support families are disjoint. A sparse and
+a full-support point leave at least three nonzero coordinates.
+Two full-support points summing to an axis would be opposite in five
+coordinates and equal in one, so their coordinate products would be
+opposite. Both products are $1$, a contradiction.
+\end{proof}
+
+\begin{proof}[Cap property and size of $K$ in Theorem~\ref{thm:main}]
+Negate coordinates $5,6$ of each layer of $K_{236}$, leaving $t$ fixed.
+This preserves $H,H'$ and $E_6$. Apply the lift to $K_{236}$ as a whole,
+with local space $V=\F\times\F^4$ retaining $(t,v)$.
+Theorem~\ref{thm:lift} therefore also rules out triples crossing the layers.
+Take the source directions in the order
+\[
+(d_1,d_2,d_3,d_4)=((1,0),(0,1),(1,1),(1,-1)).
+\]
+The remaining Hill coordinates are $v_1,\ldots,v_4$. Reading off the supports
+of $H$ and $H'$ gives exactly the fibers in Table~\ref{tab:fibers}.
+For $E_6$, the center fiber is $E$, the first two direction fibers are
+$\{0\}$, and the last two are empty. Consequently the lift has layers
+$B_+,M,B_-$ as in \eqref{eq:outer}--\eqref{eq:cap}.
+
+Each Hill layer contributes $16$ fixed points and the axis layer contributes
+$8$. Thus $c=40$ and Theorem~\ref{thm:lift} proves that $K$ is a cap of size
+$4(236+40)=1104$.
+\end{proof}
+
+\paragraph{Identification with the FunSearch cap.}
+The outer layer $B_+=R_2(H,g)$ is the lift of Hill's cap. The coordinate
+permutation
+\[
+(z_1,z_2,z_3,z_4,v_1,v_2,v_3,v_4)
+\longmapsto(z_2,z_1,z_3,z_4,v_3,v_4,v_1,v_2)
+\]
+exchanges $B_+$ and $B_-$, as can be checked from Table~\ref{tab:fibers}.
+The following linear map sends $B_+$ to the published FunSearch cap:
+\begin{align*}
+ x_0&=z_3,&x_1&=-v_2+v_4,&x_2&=-v_1-v_3,&x_3&=z_1-z_2,\\
+ x_4&=z_4,&x_5&=z_1+z_2,&x_6&=v_1-v_3,&x_7&=v_2+v_4.
+\end{align*}
+It consists of three invertible two-coordinate blocks and two single
+coordinates. Exact equality with the cap specified in
+\cite[Figure 4c and Supplement Figure E.23]{funsearch} is verified
+computationally by \texttt{verify\_funsearch.py} in the companion repository:
+the script evaluates the published membership rule on all $3^8$ vectors
+and compares the resulting set with the image of $B_+$ and, after the
+coordinate permutation above, $B_-$.
+Thus both outer layers are linearly equivalent to the FunSearch cap.
+
+Repeating the reflection lift gives a first continuation to dimension
+eleven. Negating two new address coordinates fixes four axis copies of
+the preceding fixed fiber, so $(s,c)$ becomes $(4(s+c),4c)$. The source
+$(236,40)$ gives $(1104,160)$, and the next lift has $5056$ points.
+To obtain $5744$, we return to Hill's cap and use a large affine section.
+
+\section{Coordinate substitution and the $5744$-cap}\label{sec:substitution}
+
+Choose an affine scalar coordinate on $H$, retain five complementary
+coordinates, and replace the scalar's value by one of the sets already defined:
+\[
+ A_0=P,\qquad A_1=Q_1,\qquad A_{-1}=Q_{-1}.
+\]
+These classical ingredients \cite[Section 3]{extended} have sizes
+$80,32,32$ and are disjoint. Each pairwise union is a cap:
+$P\cup Q_1=H$, reversing one coordinate carries it to $P\cup Q_{-1}$,
+and $Q_1\cup Q_{-1}$ is the cube $\{\pm1\}^6$.
+This property permits the following substitution, without a symmetry
+assumption on the source.
+
+\begin{lemma}[Coordinate substitution]\label{lem:substitution}
+Let $A_0,A_1,A_{-1}\subseteq\F^r$ be disjoint, with each pairwise union
+a cap. If
+\[
+ S=\bigcup_{i\in\F}(\{i\}\times S_i)\subseteq\F^n
+\]
+is a cap, then
+\[
+ \Phi(S)=\bigcup_{i\in\F}(S_i\times A_i)\subseteq\F^{n+r-1}
+\]
+is a cap of size $\sum_i|S_i||A_i|$.
+\end{lemma}
+\begin{proof}
+Consider three points $(y_j,a_j)$ of $\Phi(S)$ summing to zero, with
+$a_j\in A_{i_j}$. If the labels $i_j$ use at most two values, the $a_j$
+lie in one of the pairwise unions and hence coincide; disjointness makes their
+labels equal. Otherwise the labels are $0,1,-1$. In either case
+$i_1+i_2+i_3=0$, so the corresponding source points $(i_j,y_j)$ sum to
+zero and must coincide. All three $a_j$ now lie in the same cap $A_i$,
+so they too coincide. This proves the cap property, including triples
+with repeated components. Disjointness gives the size formula.
+\end{proof}
+
+Apply the lemma with the six-dimensional sets $P,Q_1,Q_{-1}$ above.
+The $80$-point set $P$ consists of Hill's sparse vectors; it is distinct
+from the $80$-point middle layer $M$ of $K$.
+If the source has $N$ points and its zero section has $m$ points, then
+\begin{equation}\label{eq:substitution-size}
+ |\Phi(S)|=80m+32(N-m)=32N+48m,
+ \qquad \Phi(S)\subseteq\F^{n+5}.
+\end{equation}
+Each point in the zero section receives $80$ replacements instead of
+$32$, so we seek a large section of $H$.
+
+\paragraph{A noncentral $45$-section.}
+On the Hill cap $H$ in our fixed coordinates, take
+\[
+ \ell(x)=x_3+x_4+x_5.
+\]
+The support $345$ belongs to $\mathcal D$. It meets the ten design
+supports in three coordinates once, two coordinates three times, and
+one coordinate six times. Counting signings gives
+\[
+\begin{array}{c|rrr}
+ &\ell=0&\ell=1&\ell=-1\\ \hline
+ P&14&33&33\\
+ Q_1&8&12&12\\ \hline
+ H&22&45&45
+\end{array}
+\]
+For the $Q_1$ row, the eight signings on coordinates $3,4,5$ have sums
+$0,1,-1$ with multiplicities $2,3,3$; each has four completions of product
+$1$. These are the classical $22/45/45$ Hill sections
+\cite[Lemma 3.1(a)]{thackeray}. Since $H$ is centered at the origin,
+the two $45$-sections are noncentral.
+
+\begin{proof}[Construction of $L$ in Theorem~\ref{thm:main}]
+Set
+\[
+ \alpha(x)=x_3+x_4+x_5-1,\qquad
+ y(x)=(x_1,x_2,x_4,x_5,x_6).
+\]
+The map $x\mapsto(\alpha(x),y(x))$ is an affine coordinate change:
+$x_3=\alpha+1-x_4-x_5$. Define explicitly
+\begin{equation}\label{eq:5744}
+ L=\{(y(x),a):x\in H,\ a\in A_{\alpha(x)}\}\subseteq\F^{11}.
+\end{equation}
+The source sections at $\alpha=0,1,-1$ have sizes $45,45,22$.
+Lemma~\ref{lem:substitution} proves that $L$ is a cap, and
+\[
+ |L|=80\cdot45+32\cdot45+32\cdot22=5744.
+\]
+\end{proof}
+
+An ordinary coordinate, such as $x_6$, gives sections of sizes $40,36,36$
+and hence $80\cdot40+32(36+36)=5504$, recovering the signed-support
+construction of \cite[Corollary 2]{karapetyan}. Choosing $\alpha=\ell-1$
+assigns the larger replacement set to a noncentral $45$-section instead
+of that central $40$-section, gaining exactly
+\[
+ (80-32)(45-40)=240.
+\]
+Neither construction is asserted to be globally optimal.
+
+\paragraph{Layers of the $5744$-cap.}
+The new cap also has two equally sized outer layers. The scalar
+$\beta(x)=x_2+x_4+x_5$ depends only on the retained coordinates $y$.
+Counting the displayed Hill supports by $(\alpha,\beta)$ gives
+\[
+ \bigl(|\{x\in H:\alpha(x)=i,\ \beta(x)=j\}|\bigr)_{i,j=0,1,-1}
+ =\begin{pmatrix}9&18&18\\9&18&18\\4&9&9\end{pmatrix}.
+\]
+Weighting the rows by $80,32,32$ gives the profile $2304/1136/2304$
+in the order $\beta=-1,0,1$, alongside $K$'s $512/80/512$ profile.
+Here only the outer-layer sizes are identified; no equivalence between
+these two $2304$-caps is asserted.
+
+Exact pair checks also confirm the cap property for both coordinate
+sets. The existence proofs above are independent of these computations.
+
+% Give the bibliography a coherent start rather than stranding one entry.
+\clearpage
+\paragraph{Use of AI tools.}
+OpenAI's Codex (using GPT-6 Astra) assisted with computational exploration,
+code development, and preparation and revision of the manuscript.
+The author takes responsibility for the mathematical claims, references,
+and final text.
+
+\begin{thebibliography}{9}
+\bibitem{calderbank}
+A.~R. Calderbank and P.~C. Fishburn,
+\emph{Maximal three-independent subsets of $\{0,1,2\}^n$},
+Designs, Codes and Cryptography 4 (1994), 203--211.
+\bibitem{smallcaps}
+Y.~Edel and J.~Bierbrauer,
+\emph{Large caps in small spaces},
+Designs, Codes and Cryptography 23 (2001), 197--212.
+Corrected author version:
+\url{https://www.yvesedel.de/Papers/smallCaps.pdf}.
+\bibitem{thackeray}
+H.~(M.)~R. Thackeray,
+\emph{The cap set problem: Up to dimension 7},
+arXiv:2206.09804 (2022).
+\url{https://arxiv.org/abs/2206.09804}.
+\bibitem{funsearch}
+B.~Romera-Paredes et al.,
+\emph{Mathematical discoveries from program search with large language models},
+Nature 625 (2024), 468--475; Supplement E.2.
+\url{https://doi.org/10.1038/s41586-023-06924-6}.
+\bibitem{capsurvey}
+J.~Bierbrauer and Y.~Edel,
+\emph{Large caps in projective Galois spaces},
+in Current Research Topics in Galois Geometry (2012), 87--104.
+\url{https://www.yvesedel.de/Papers/CapSurvey.pdf}.
+\bibitem{karapetyan}
+I.~Karapetyan and K.~Karapetyan,
+\emph{Complete Caps in $AG(n,3)$},
+Proceedings of CSIT 2023, 135--136.
+\url{https://doi.org/10.51408/csit2023_30}.
+\bibitem{recursive}
+Y.~Edel and J.~Bierbrauer,
+\emph{Recursive constructions for large caps},
+Bulletin of the Belgian Mathematical Society Simon Stevin 6 (1999), 249--258.
+\url{https://www.yvesedel.de/Papers/RCap.pdf}.
+\bibitem{extended}
+Y.~Edel,
+\emph{Extensions of generalized product caps},
+Designs, Codes and Cryptography 31 (2004), 5--14.
+\url{https://www.yvesedel.de/Papers/ExtProd.pdf}.
+\end{thebibliography}
+\end{document}

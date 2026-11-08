@@ -4,7 +4,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-ROOT = Path(__file__).resolve().parent
+CODE_DIR = Path(__file__).resolve().parent
 COMMANDS = (
     ('construction_1104.py', '--check'),
     ('construction_5744.py', '--check'),
@@ -18,7 +18,7 @@ COMMANDS = (
 def main():
     for command in COMMANDS:
         print('\nRunning:', ' '.join(command), flush=True)
-        result = subprocess.run([sys.executable, *command], cwd=ROOT)
+        result = subprocess.run([sys.executable, *command], cwd=CODE_DIR)
         if result.returncode:
             return result.returncode
     print('\nPASS: all coordinate, cap, FunSearch, diagram, and unit checks.')

@@ -12,7 +12,7 @@ from pathlib import Path
 
 from hill import ingredients
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 HEADER = ('x1', 'x2', 'x4', 'x5', 'x6', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6')
 
 

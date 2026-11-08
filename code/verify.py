@@ -12,7 +12,7 @@ import hashlib
 from itertools import combinations
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 HEADERS = {
     9: ['t', 'z1', 'z2', 'z3', 'z4', 'v1', 'v2', 'v3', 'v4'],
     11: ['x1', 'x2', 'x4', 'x5', 'x6', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6'],

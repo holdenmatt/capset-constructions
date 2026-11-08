@@ -11,7 +11,7 @@ from pathlib import Path
 
 from hill import hill_caps, signings
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 HEADER = ('t', 'z1', 'z2', 'z3', 'z4', 'v1', 'v2', 'v3', 'v4')
 DIRECTIONS = ((0,0), (1,0), (0,1), (1,1), (1,2))
 
