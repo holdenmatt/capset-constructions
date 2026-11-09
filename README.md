@@ -1,150 +1,85 @@
 # Cap-set constructions
 
-Coordinates and exact verification for **Large caps in F₃⁹ and F₃¹¹**, by Matt Holden.
-**[Read the paper (PDF)](holden-large-caps.pdf)** · [LaTeX source](tex/main.tex)
+Coordinates and exact verification for *Large caps in F₃⁹ and F₃¹¹*, by Matt Holden.
 
-An arXiv link will follow when available.
+[Read the paper (PDF)](holden-large-caps.pdf) · [LaTeX source](tex/main.tex)
 
-| Cap | Dimension | Construction |
-| --- | --- | --- |
-| 1104 points | 9 | Reflection lift of the classical Calderbank–Fishburn 236-cap |
-| 5744 points | 11 | Coordinate substitution in Hill's 112-cap through a noncentral 45-section |
-
-Both use the same signed-support model of Hill's cap. The 1104-cap has layers
-of sizes 512,80,512; both outer layers are linearly equivalent to the
-512-cap discovered using FunSearch.
+| Cap | Dimension | Construction | Point list |
+| --- | --- | --- | --- |
+| 1104 points | 9 | Reflection lift of the classical Calderbank–Fishburn 236-cap | [CSV](data/cap1104.csv) |
+| 5744 points | 11 | Coordinate substitution in Hill's 112-cap through a noncentral 45-section | [CSV](data/cap5744.csv) |
 
 To the best of our knowledge, these improve the previously reported lower
-bounds of 1082 and 5504, respectively. No global optimality claim is made.
+bounds of 1082 and 5504, respectively. The paper gives the constructions and proofs.
 
-## Run all checks
+## Verify the constructions
 
-Use **Python 3.9 or later**. All scripts use only the standard library and run offline.
+Use Python 3.9 or later. All scripts use only the standard library and run offline.
 From the repository root:
 
 ```sh
 python3 code/check_all.py
 ```
 
-This checks:
+This verifies that the saved point lists match the constructors, checks every
+pair of distinct points for a forbidden line, and checks the FunSearch
+maps, coordinate diagrams, and construction ingredients. It also runs the tests.
+The pair checker reads the CSVs independently of the constructors.
 
-- Both saved CSVs exactly match their coordinate recipes.
-- All **608,856 pairs** in the 1104-cap and **16,493,896 pairs** in the 5744-cap:
-  for distinct points `x,y`, the third collinear point `-x-y` is absent.
-- The affine dimensions and the layer counts documented below.
-- Both invertible maps from the 512-point outer layers to the published FunSearch cap.
-- The saved 1104 diagram, including decoding dot positions back to cap points.
-- The substitution hypotheses, Hill section counts, coordinate recovery, and
-  rejection of lines, duplicates, and malformed data.
-
-`verify.py` reads the point lists without importing either constructor or `hill.py`.
-These finite checks accompany the proofs; they do not certify historical priority.
-The pair check for 5744 is the slowest step.
-
-To run individual checks or regenerate artifacts:
+To check one cap or regenerate its point list:
 
 ```sh
 python3 code/verify.py --cap 5744
-python3 code/verify_funsearch.py
-python3 -m unittest discover -s code -p 'test_*.py' -v
-
-python3 code/construction_1104.py
 python3 code/construction_5744.py
-python3 code/make_diagrams.py
 ```
 
-Both constructors and `make_diagrams.py` accept `--check` to compare saved
-artifacts without writing. `verify.py` checks both CSVs by default; use
-`python3 code/verify.py --cap 5744 path/to/points.csv` for a custom point list.
+Use `1104` instead for the other cap. Constructors accept `--check` to compare
+with the saved CSV without writing. For a custom point list, run
+`python3 code/verify.py --cap 5744 path/to/points.csv`.
 
-## Files and coordinates
+## Files
 
 | File | Purpose |
 | --- | --- |
-| [holden-large-caps.pdf](holden-large-caps.pdf) | Reviewed paper. |
-| [tex/](tex/) | Manuscript source and its included figure; compile `main.tex` from this directory. |
-| [code/check_all.py](code/check_all.py) | Runs the complete offline verification suite. |
-| [hill.py](code/hill.py) | Shared six-coordinate support design and Hill ingredients. |
-| [construction_1104.py](code/construction_1104.py) | Derives the Hill fibers and assembles the reflection lift. |
-| [construction_5744.py](code/construction_5744.py) | Implements the affine coordinate substitution. |
-| [data/cap1104.csv](data/cap1104.csv), [data/cap5744.csv](data/cap5744.csv) | Complete point lists, sorted lexicographically, with headers. |
-| [verify.py](code/verify.py) | Independent pair checks, affine ranks, and layer counts. |
-| [verify_funsearch.py](code/verify_funsearch.py) | Exact comparison with the published FunSearch membership rule. |
-| [make_diagrams.py](code/make_diagrams.py) | Renders the 1104 CSV as a standalone SVG. |
-| [code/tests/](code/tests/) | Geometry, coordinate conventions, diagram decoding, and negative controls. |
+| [holden-large-caps.pdf](holden-large-caps.pdf) | Paper. |
+| [tex/](tex/) | LaTeX source and figure; compile `main.tex` from this directory. |
+| [data/](data/) | Complete point lists, with coordinate headers matching the paper. |
+| [construction_1104.py](code/construction_1104.py), [construction_5744.py](code/construction_5744.py) | Coordinate constructors. |
+| [hill.py](code/hill.py) | Shared Hill-cap ingredients. |
+| [verify.py](code/verify.py) | Independent cap-property, dimension, and layer-count checks. |
+| [verify_funsearch.py](code/verify_funsearch.py) | Explicit maps and exact FunSearch comparison. |
+| [make_diagrams.py](code/make_diagrams.py) | Generates the 1104 coordinate diagram from its CSV. |
+| [code/tests/](code/tests/) | Tests of the constructions, diagrams, and input validation. |
 
-Arithmetic is modulo three: **2 represents −1**. Coordinate indices in the
-CSV headers are one-based, matching the paper.
+Each CSV row is one point. Arithmetic is modulo three: **2 represents −1**.
+See the paper for the meaning of the coordinates.
 
-### 1104-cap
+## FunSearch comparison
 
-```text
-t,z1,z2,z3,z4,v1,v2,v3,v4
+The two 512-point outer layers of the 1104-cap are linearly equivalent to
+the cap found using FunSearch. To verify this:
+
+```sh
+python3 code/verify_funsearch.py
 ```
 
-`t` selects the layer; `z` specifies a block and `v` a point in its fiber.
-The diagram displays layers `t=1,0,2` (that is, +1,0,−1).
+The script contains both coordinate maps, checks their invertibility, and
+compares the mapped point sets with the published membership rule evaluated
+on all `3^8` vectors (Romera-Paredes et al., Figure 4c and Supplement Figure E.23).
 
-### 5744-cap
-
-```text
-x1,x2,x4,x5,x6,a1,a2,a3,a4,a5,a6
-```
-
-The source is `H = P ∪ Q+` in six coordinates. `P` contains all signings on
-these ten supports:
-
-```text
-123, 124, 135, 146, 156, 236, 245, 256, 345, 346
-```
-
-`Q+` and `Q−` are the full-support vectors of coordinate product +1 and −1.
-The substituted scalar is `alpha = x3+x4+x5−1`. Retain `x1,x2,x4,x5,x6` and
-append every vector `a` in `P`, `Q+`, or `Q−` according as `alpha` is 0,1,2.
-These replacement sets have sizes 80,32,32; the source sections have sizes
-45,45,22. Thus the output has `80·45 + 32·45 + 32·22 = 5744` points.
-
-The source coordinate can be recovered as `x3 = alpha+1−x4−x5` modulo 3.
-As an additional check, the scalar `beta = x2+x4+x5` gives layer sizes
-2304,1136,2304 at `beta=1,0,2`. These counts alone do not establish affine
-equivalence of the outer layers. The six-dimensional set `P` is distinct from the 1104-cap's
-80-point middle layer in eight dimensions.
-
-## The FunSearch comparison
-
-FunSearch is a program-search method guided by a large language model.
-The 512-cap's membership rule is specified by Romera-Paredes et al.,
-**Figure 4c and Supplement Figure E.23**. `verify_funsearch.py` evaluates it
-on all `3^8` vectors, using zero-based indices `x0,…,x7`.
-The map from the 1104-cap's plus layer is:
-
-```text
-x = (z3, -v2+v4, -v1-v3, z1-z2, z4, z1+z2, v1-v3, v2+v4) mod 3.
-```
-
-For the minus layer, first apply `(z2,z1,z3,z4,v3,v4,v1,v2)`, which exchanges
-the two outer layers. The checker verifies invertibility and equality of
-the complete point sets, then checks all 130,816 FunSearch pairs for lines.
-
-The predicate was also checked against the authors'
-[official point list at a fixed revision](https://github.com/google-deepmind/funsearch/blob/cc53f274237d7ab05c19df939edbc1f9616a7c19/cap_set/n8_size512.txt).
-To repeat that optional check, download the file and run:
+For an optional comparison with the authors' data, download the
+[official point list](https://github.com/google-deepmind/funsearch/blob/cc53f274237d7ab05c19df939edbc1f9616a7c19/cap_set/n8_size512.txt) and run:
 
 ```sh
 python3 code/verify_funsearch.py --official-points /path/to/n8_size512.txt
 ```
 
-## Reading the 1104 diagram
+## Coordinate diagram
 
-Each dot is one point. In every panel, the 9-by-9 block grid encodes
-`(z1,z2)` horizontally and `(z3,z4)` vertically. Within each block, the
-9-by-9 possible dot positions encode `(v1,v2)` and `(v3,v4)`. Pairs are
-ordered lexicographically, −1 < 0 < 1, increasing rightwards and upwards.
-All panels share the same arrangement and scale, with dots inset from block edges.
-
-Blue blocks have addresses on the signed axes `E`; the other four colors
-label `Fi`, the addresses whose only zero coordinate is `i`. Straight
-alignments in this encoding need not be lines over F₃.
+Each dot is one point of the 1104-cap. The panels show its three layers,
+with 512, 80, and 512 points. Each small square fixes four coordinates;
+dot positions encode the remaining four. See Figure 1 in the paper for
+coordinate ordering and colors. Alignments on the page need not be lines over F₃.
 
 ![Coordinate diagrams of the 1104-cap](figures/cap1104.svg)
 

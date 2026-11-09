@@ -44,7 +44,7 @@ def predicate_part(x):
 
 
 def to_funsearch(p):
-    """The linear map B_+ -> FunSearch coordinates, documented in the README."""
+    """The linear map B_+ -> FunSearch coordinates."""
     z1, z2, z3, z4, v1, v2, v3, v4 = p
     return tuple(a % 3 for a in
                  (z3, -v2+v4, -v1-v3, z1-z2, z4, z1+z2, v1-v3, v2+v4))
