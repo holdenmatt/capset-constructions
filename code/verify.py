@@ -23,14 +23,17 @@ SIZES = {1104: 9, 5744: 11}
 def read_points(path, dimension=9):
     header = HEADERS[dimension]
     with Path(path).open(encoding='ascii', newline='') as handle:
-        reader = csv.reader(handle)
-        if next(reader, None) != header:
-            raise ValueError('CSV header must be ' + ','.join(header))
-        points = []
-        for line, row in enumerate(reader, 2):
-            if len(row) != dimension or any(x not in ('0', '1', '2') for x in row):
-                raise ValueError(f'Invalid ternary {dimension}-coordinate row at line {line}.')
-            points.append(tuple(map(int, row)))
+        reader = csv.reader(handle, strict=True)
+        try:
+            if next(reader, None) != header:
+                raise ValueError('CSV header must be ' + ','.join(header))
+            points = []
+            for line, row in enumerate(reader, 2):
+                if len(row) != dimension or any(x not in ('0', '1', '2') for x in row):
+                    raise ValueError(f'Invalid ternary {dimension}-coordinate row at line {line}.')
+                points.append(tuple(map(int, row)))
+        except csv.Error as error:
+            raise ValueError(f'Malformed CSV near line {reader.line_num}: {error}') from error
     return points
 
 

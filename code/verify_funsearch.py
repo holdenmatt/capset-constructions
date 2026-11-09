@@ -44,7 +44,7 @@ def predicate_part(x):
 
 
 def to_funsearch(p):
-    """The manuscript's displayed linear map B_+ -> FunSearch coordinates."""
+    """The linear map B_+ -> FunSearch coordinates, documented in the README."""
     z1, z2, z3, z4, v1, v2, v3, v4 = p
     return tuple(a % 3 for a in
                  (z3, -v2+v4, -v1-v3, z1-z2, z4, z1+z2, v1-v3, v2+v4))
@@ -76,24 +76,31 @@ def main():
         basis_images = [to_funsearch(tuple(int(i == j) for j in range(8)))
                         for i in range(8)]
         if matrix_rank(basis_images) != 8:
-            raise ValueError('The displayed linear map is singular.')
+            raise ValueError('The linear map is singular.')
         target = set(selected)
         if len(plus) != 512 or {to_funsearch(p) for p in plus} != target:
             raise ValueError('The plus layer does not map exactly to the published cap.')
         if {swap_outer(p) for p in plus} != minus:
-            raise ValueError('The displayed permutation does not exchange the outer layers.')
+            raise ValueError('The coordinate permutation does not exchange the outer layers.')
         if {to_funsearch(swap_outer(p)) for p in minus} != target:
             raise ValueError('The minus layer does not map exactly to the published cap.')
         checked = check_cap(sorted(target), 8)
         if args.official_points:
-            official = [tuple(json.loads(line))
-                        for line in args.official_points.read_text().splitlines() if line.strip()]
+            official = []
+            for line, text in enumerate(args.official_points.read_text().splitlines(), 1):
+                if not text.strip():
+                    continue
+                point = json.loads(text)
+                if (not isinstance(point, list) or len(point) != 8
+                        or any(type(a) is not int or a not in (0, 1, 2) for a in point)):
+                    raise ValueError(f'Invalid ternary 8-coordinate row at line {line}.')
+                official.append(tuple(point))
             if len(official) != 512 or set(official) != target:
                 raise ValueError('The predicate differs from the supplied official points.')
     except (OSError, ValueError, UnicodeError, TypeError) as error:
         parser.exit(1, f'FAIL: {error}\n')
     print('PASS: published predicate has four disjoint parts of 128 points each.')
-    print('PASS: displayed linear map has rank 8 over F_3.')
+    print('PASS: linear map has rank 8 over F_3.')
     print('PASS: both outer layers map exactly to the published FunSearch 512-cap.')
     print(f'PASS: all {checked:,} FunSearch pairs checked; no forbidden line.')
     if args.official_points:

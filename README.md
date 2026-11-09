@@ -1,17 +1,18 @@
 # Cap-set constructions
 
 Coordinates and exact verification for **Large caps in F₃⁹ and F₃¹¹**, by Matt Holden.
-[LaTeX source](tex/main.tex). The reviewed PDF will be added as
-`holden-large-caps.pdf` before publication. An arXiv link will follow when available.
+**[Read the paper (PDF)](holden-large-caps.pdf)** · [LaTeX source](tex/main.tex)
 
-| Cap | Dimension | Construction | Parallel layers |
-| --- | --- | --- | --- |
-| 1104 points | 9 | Reflection lift of the classical Calderbank–Fishburn 236-cap | 512, 80, 512 |
-| 5744 points | 11 | Coordinate substitution in Hill's 112-cap through a noncentral 45-section | 2304, 1136, 2304 |
+An arXiv link will follow when available.
 
-Both use the same signed-support model of Hill's cap. Both outer layers of
-1104 are linearly equivalent to the 512-cap discovered using FunSearch.
-The 5744 layer counts do not assert an equivalence between its outer layers.
+| Cap | Dimension | Construction |
+| --- | --- | --- |
+| 1104 points | 9 | Reflection lift of the classical Calderbank–Fishburn 236-cap |
+| 5744 points | 11 | Coordinate substitution in Hill's 112-cap through a noncentral 45-section |
+
+Both use the same signed-support model of Hill's cap. The 1104-cap has layers
+of sizes 512,80,512; both outer layers are linearly equivalent to the
+512-cap discovered using FunSearch.
 
 To the best of our knowledge, these improve the previously reported lower
 bounds of 1082 and 5504, respectively. No global optimality claim is made.
@@ -30,7 +31,7 @@ This checks:
 - Both saved CSVs exactly match their coordinate recipes.
 - All **608,856 pairs** in the 1104-cap and **16,493,896 pairs** in the 5744-cap:
   for distinct points `x,y`, the third collinear point `-x-y` is absent.
-- The affine dimensions and the layer counts in the table above.
+- The affine dimensions and the layer counts documented below.
 - Both invertible maps from the 512-point outer layers to the published FunSearch cap.
 - The saved 1104 diagram, including decoding dot positions back to cap points.
 - The substitution hypotheses, Hill section counts, coordinate recovery, and
@@ -60,6 +61,7 @@ artifacts without writing. `verify.py` checks both CSVs by default; use
 
 | File | Purpose |
 | --- | --- |
+| [holden-large-caps.pdf](holden-large-caps.pdf) | Reviewed paper. |
 | [tex/](tex/) | Manuscript source and its included figure; compile `main.tex` from this directory. |
 | [code/check_all.py](code/check_all.py) | Runs the complete offline verification suite. |
 | [hill.py](code/hill.py) | Shared six-coordinate support design and Hill ingredients. |
@@ -103,8 +105,9 @@ These replacement sets have sizes 80,32,32; the source sections have sizes
 45,45,22. Thus the output has `80·45 + 32·45 + 32·22 = 5744` points.
 
 The source coordinate can be recovered as `x3 = alpha+1−x4−x5` modulo 3.
-The output's layers use `beta = x2+x4+x5`, with sizes 2304,1136,2304 at
-`beta=1,0,2`. The six-dimensional set `P` is distinct from the 1104-cap's
+As an additional check, the scalar `beta = x2+x4+x5` gives layer sizes
+2304,1136,2304 at `beta=1,0,2`. These counts alone do not establish affine
+equivalence of the outer layers. The six-dimensional set `P` is distinct from the 1104-cap's
 80-point middle layer in eight dimensions.
 
 ## The FunSearch comparison
