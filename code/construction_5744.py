@@ -1,8 +1,11 @@
-"""Replace alpha=x3+x4+x5-1 of Hill's cap by P80, Q+32, Q-32.
+"""Construct the 5744-cap by coordinate substitution in Hill's 112-cap.
 
 Coordinates are (x1,x2,x4,x5,x6,a1,a2,a3,a4,a5,a6), modulo 3.
 The first five entries retain the source coordinates; the last six replace
-alpha. Its labels 0,1,2 select P,Q_1,Q_{-1}, respectively.
+alpha=x3+x4+x5-1. Its labels 0,1,2 select P,Q_1,Q_{-1}, respectively.
+The source sections have sizes 45,45,22 and the replacement sets have
+sizes 80,32,32, giving 45*80 + 45*32 + 22*32 = 5744 points.
+Throughout the code, 2 represents -1.
 """
 
 import argparse
@@ -17,18 +20,29 @@ HEADER = ('x1', 'x2', 'x4', 'x5', 'x6', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6')
 
 
 def alpha(x):
+    """Shift the noncentral section x3+x4+x5=1 to label zero."""
     return (x[2] + x[3] + x[4] - 1) % 3
 
 
 def beta(x):
+    """Additional layer coordinate used in tests; not needed to construct the cap."""
     return (x[1] + x[3] + x[4]) % 3
 
 
 def construct():
-    parts = ingredients()
-    h = parts[0] | parts[1]
-    return sorted((x[0], x[1], x[3], x[4], x[5]) + a
-                  for x in h for a in parts[alpha(x)])
+    """Return the sorted 5744 points in the coordinate order given by HEADER."""
+    p, q_plus, q_minus = ingredients()
+    hill_cap = p | q_plus
+    replacements = (p, q_plus, q_minus)
+    points = []
+    for x in hill_cap:
+        # Retain five coordinates. Together with alpha they determine x,
+        # since x3 = alpha + 1 - x4 - x5 (modulo 3).
+        retained = (x[0], x[1], x[3], x[4], x[5])
+        replacement_set = replacements[alpha(x)]
+        # Replace the scalar label by every six-coordinate point in its set.
+        points.extend(retained + a for a in replacement_set)
+    return sorted(points)
 
 
 def csv_text(points):
