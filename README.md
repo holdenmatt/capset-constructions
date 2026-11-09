@@ -98,14 +98,12 @@ coordinate ordering and colors. Alignments on the page need not be lines over F�
   Nature **625** (2024), 468–475: FunSearch's explicit 512-cap, its discussion
   of Hill, and a later report of the dimension-nine bound 1082.
 - Karapetyan and Karapetyan, [*Complete Caps in AG(n,3)*](https://doi.org/10.51408/csit2023_30),
-  CSIT 2023, 135–136, Corollary 2: the 5504 construction. The ordinary Hill
-  slicing 40/36/36 gives 5504 under the substitution; choosing a noncentral
-  45-section gains `(80−32)(45−40) = 240` points.
+  CSIT 2023, 135–136, Corollary 2: the 5504-point construction in dimension eleven.
 - Fiber and generalized-product constructions are classical; see
   [Edel–Bierbrauer (1999)](https://www.yvesedel.de/Papers/RCap.pdf) and
   [Edel (2004), including Section 3's Hill ingredients](https://www.yvesedel.de/Papers/ExtProd.pdf).
 
-The paper (including its LaTeX source and PDF), original code, documentation,
+The paper (including its LaTeX source and PDF), code, documentation,
 coordinate data, and diagrams are available under the [MIT license](LICENSE).
 This license does not cover the external works cited or linked above.
 Please cite the paper and relevant original sources.
